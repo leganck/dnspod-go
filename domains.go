@@ -3,7 +3,6 @@ package dnspod
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 )
 
 const (
@@ -122,9 +121,10 @@ func (s *DomainsService) Create(domainAttributes Domain) (Domain, *Response, err
 // DNSPod API docs:
 // - https://www.dnspod.cn/docs/domains.html#domain-info
 // - https://docs.dnspod.com/api/5fe1b37d6e336701a2111f2b/
-func (s *DomainsService) Get(id int) (Domain, *Response, error) {
+func (s *DomainsService) Get(id, domain string) (Domain, *Response, error) {
 	payload := s.client.CommonParams.toPayLoad()
-	payload.Set("domain_id", strconv.Itoa(id))
+	payload.Set("domain_id", id)
+	payload.Set("domain", domain)
 
 	returnedDomain := domainWrapper{}
 
@@ -141,10 +141,10 @@ func (s *DomainsService) Get(id int) (Domain, *Response, error) {
 // DNSPod API docs:
 // - https://dnsapi.cn/Domain.Remove
 // - https://docs.dnspod.com/api/5fe1ac446e336701a2111dd1/
-func (s *DomainsService) Delete(id int) (*Response, error) {
+func (s *DomainsService) Delete(id string, domain string) (*Response, error) {
 	payload := s.client.CommonParams.toPayLoad()
-	payload.Set("domain_id", strconv.Itoa(id))
-
+	payload.Set("domain_id", id)
+	payload.Set("domain", domain)
 	returnedDomain := domainWrapper{}
 
 	return s.client.post(methodDomainRemove, payload, &returnedDomain)
